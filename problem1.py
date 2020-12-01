@@ -1,23 +1,17 @@
 import unittest
 import itertools
 
-# Find the product of the two numbers in this list which sum to 2020
-def get_product(entries):
-    p1 = 0
-    p2 = 0
-    for entry in entries:
-        #candidate = 2020 - entry
-        if (2020 - entry) in entries:
-            p1 = entry
-            p2 = (2020 - entry)
+# For a list of numbers find the combination (of size number_of_values_to_combine) 
+# that sums to the target value.
+# return the product of the values in this combination.
+def get_product(entries, number_of_values_to_combine, target_value):
+    for combination in itertools.combinations(entries, number_of_values_to_combine):
+        if sum(combination) == target_value:
+            result = 1
+            for c in combination:
+                result *= c
+            return result
 
-    return(p1*p2)    
-
-# Find the product of the 3 numbers in this list which sum to 2020
-def get_triple_product(entries):
-    for combination in itertools.combinations(entries,3):
-        if sum(combination) == 2020:
-            return combination[0] * combination[1] * combination[2]
 
 test_input = [
 1721,
@@ -28,10 +22,10 @@ test_input = [
 1456
 ]
 tc = unittest.TestCase()
-tc.assertEqual(514579, get_product(test_input))
-tc.assertEqual(241861950, get_triple_product(test_input))
+tc.assertEqual(514579, get_product(test_input,2,2020))
+tc.assertEqual(241861950, get_product(test_input,3,2020))
 
 with open('./problem1_input.txt') as f:
     problem_data = [int(item) for item in f.readlines()]
-    print(get_product(problem_data))
-    print(get_triple_product(problem_data))
+    print(get_product(problem_data, 2, 2020))
+    print(get_product(problem_data, 3, 2020))
