@@ -45,5 +45,5 @@ tc.assertEqual(1, count_valid_new_policy(test_input))
 
 with open('./problem2_input.txt') as f:
     problem_input = f.readlines()
-    print('part 1 {}'.format(count_valid(problem_input)))
-    print('part 2 {}'.format(count_valid_new_policy(problem_input)))
+    print('Problem 1 : {}'.format(count_valid(problem_input)))
+    print('Problem 2 : {}'.format(count_valid_new_policy(problem_input)))

@@ -27,5 +27,5 @@ tc.assertEqual(241861950, get_product(test_input,3,2020))
 
 with open('./problem1_input.txt') as f:
     problem_data = [int(item) for item in f.readlines()]
-    print(get_product(problem_data, 2, 2020))
-    print(get_product(problem_data, 3, 2020))
+    print('Problem 1 : {}'.format(get_product(problem_data, 2, 2020)))
+    print('Problem 2 : {}'.format(get_product(problem_data, 3, 2020)))
