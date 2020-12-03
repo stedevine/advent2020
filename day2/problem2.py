@@ -47,5 +47,3 @@ with open('./problem2_input.txt') as f:
     problem_input = f.readlines()
     print('part 1 {}'.format(count_valid(problem_input)))
     print('part 2 {}'.format(count_valid_new_policy(problem_input)))
-
-#print('answer {}'.format(count_valid_new_policy(problem_input)))
