@@ -51,25 +51,15 @@ def fields_are_valid(passport):
         and check_number(passport)
 
 def check_integer(passport, key, min, max):
-    try:
-        val = int(passport[key])
-        return val >= min and val <= max
-    
-    except ValueError:
-        return False
+    return passport[key] in [str(item) for item in range(min, max+1)]
 
 def check_height(passport):
-    try:
-        metric = passport['hgt'][-2:]
-        height = int(passport['hgt'][:-2])
-        if metric == 'in':
-            return  height >= 59 and height <= 76     
-        if metric == 'cm' : 
-            return  height >= 150 and height <= 193 
-
-    except ValueError:
-        return False
-
+    if 'cm' in passport['hgt']:
+        return passport['hgt'] in ['{}cm'.format(item) for item in range(150, 194)]
+    
+    if 'in' in passport['hgt']:
+        return passport['hgt'] in ['{}in'.format(item) for item in range(59, 77)] 
+    
     return False
 
 def check_hair(passport):
@@ -101,8 +91,7 @@ def check_number(passport):
     except ValueError:
         return False 
 
-problem_input = []
 with open('./problem4_input.txt') as f:
     problem_input = [l.strip() for l in f.readlines()]
     print('Problem 1 : {}'.format(count_valid(problem_input,[has_fields])))
-    print('Problem 2 : {}'.format(count_valid(problem_input,[has_fields,fields_are_valid])))
+    print('Problem 2 : {}'.format(count_valid(problem_input,[has_fields, fields_are_valid])))
