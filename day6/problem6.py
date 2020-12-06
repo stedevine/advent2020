@@ -1,4 +1,4 @@
-import string
+import unittest
 def get_answers(problem_data):
     forms = []
     form = ''
@@ -14,47 +14,42 @@ def get_answers(problem_data):
     forms.append(form)
     return sum(([len(i) for i in forms]))
 
-    #print(sum([sum(len(l)) for l in forms]))
-
-    return forms
-
 def get_all_yes(problem_data):
-    # count all the letters (az) that are present in every line
-
+    
     forms = []
     form_lines = []
+    
     for line in problem_data:
         if line is not '':
             form_lines.append(line)
         else:
-            print('form {}'.format(form_lines))
             forms.append(form_lines)
             form_lines = []
 
     forms.append(form_lines)
-    #print('form {}'.format(form_lines))
-    form_count = 0 
-    for f in forms:
-        print('form {} #people {}'.format(f, len(f)))
-        #print(''.join(f))
-        letters = set(''.join(f))
+    
+    all_yes_count = 0 
+    for form in forms:
+        # get the unique set of letters in the form
+        letters = set(''.join(form))
         
+        # put all the letters in the form into a string and, for each unique letter 
+        # count the numer of instances in the string,
+        # if all the users answered 'yes' there will be a #ofusers(len of form) answers in each form
         for l in letters:
-            if (''.join(f).count(l) == len(f)):
-                form_count += 1
-    print('{}'.format(form_count)) 
-        # for all yes to answer there should be len(f) instances of each answer
-         
+            if (''.join(form).count(l) == len(form)):
+                all_yes_count += 1
 
+    return all_yes_count
 
-
-
+tc = unittest.TestCase()
 with open('./test_input.txt') as f:
-    problem_input = [l.strip() for l in f.readlines()]    
-    print(get_answers(problem_input))
-    get_all_yes(problem_input)
+    test_input = [l.strip() for l in f.readlines()] 
+
+    tc.assertEqual(11, get_answers(test_input))
+    tc.assertEqual(6, get_all_yes(test_input))
 
 with open('./problem6_input.txt') as f:
     problem_input = [l.strip() for l in f.readlines()]    
-    print(get_answers(problem_input))
-    get_all_yes(problem_input)
+    print('Problem 1 : {}'.format(get_answers(problem_input)))
+    print('Problem 2 : {}'.format(get_all_yes(problem_input)))
