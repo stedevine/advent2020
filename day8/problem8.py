@@ -9,26 +9,22 @@ def run_code(instructions):
     # keep track of all the offsets we have visited
     visited = set()
 
+    operation_processor = {}
+    operation_processor['nop'] = (lambda offset, accumulator, argument: (offset + 1, accumulator))
+    operation_processor['acc'] = (lambda offset, accumulator, argument: (offset + 1, accumulator + argument))
+    operation_processor['jmp'] = (lambda offset, accumulator, argument: (offset + argument, accumulator))
+
     while(True):
         operation = instructions[offset].split(' ')[0]
         argument = int(instructions[offset].split(' ')[1])
-        # Process operations
-        if operation == 'nop':
-            offset += 1
-        
-        if operation == 'acc':
-            accumulator += argument
-            offset += 1
-        
-        if operation == 'jmp':
-            offset += argument
-        
+        offset, accumulator =  operation_processor[operation](offset, accumulator, argument)
+
         if offset == len(instructions):
-            #print('program completed {} {}'.format(offset, accumulator))
+            # Complete
             return (True, accumulator)
 
         if offset in visited:
-            #print('loop! {} {}'.format(offset, accumulator))
+            # Infinite loop
             return (False, accumulator)
         
         visited.add(offset)
