@@ -8,10 +8,13 @@ def solve_problem(grid):
             result.append([])
             grid[row] = list(grid[row])
             for col in (range(0, len(grid[row]))):
+                # Add the co ordinates of all the positions that should change
                 changes.append(should_change(grid,row,col))
     
         changes = list(filter(lambda c:  c != None, changes))
         if len(changes) == 0:
+            # no more changes - grid is stable.
+            # Find the number of unoccupied elements.
             unoccupied = 0
             for row in grid:
                 unoccupied += row.count('#')
@@ -39,7 +42,6 @@ def should_change(grid, row, col):
     
     if grid[row][col] == 'L' and get_number_occupied(grid, row, col) == 0:
         return (row,col)
-        #return '#' if get_number_occupied == 0 else 'L'
     
     if grid[row][col] == '#' and get_number_occupied(grid, row, col) >= 4:
         return (row,col)
