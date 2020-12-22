@@ -1,103 +1,112 @@
 def solve_problem(grid):
-    get_next_state(grid)
-    display(grid)
-    c = 0
-    for l in grid:
-        c += l.count('#')
-    
-    print(c)
 
-def count_occupied(grid):
-    c = 0
-    for l in grid:
-        c += l.count('#')
-    return c
-
-def get_next_state(grid):
-    changes = []
     while(True):
-        for row in range(0,len(grid)):
-            for col in range(0, len(grid[row])):
-                change = get_change(grid,row,col)
-                if change:
-                    changes.append(change)
-        #print(changes)
-        if len(changes) == 0:
-            break
-        apply_changes(changes,grid)
+        #input()
         changes = []
-        display(grid)
-        print(count_occupied(grid))
-        input()
+        result = []
+        for row in (range(0,len(grid))):
+            result.append([])
+            grid[row] = list(grid[row])
+            for col in (range(0, len(grid[row]))):
+                # Add the co ordinates of all the positions that should change
+                changes.append(should_change(grid,row,col))
+    
+        changes = list(filter(lambda c:  c != None, changes))
+        if len(changes) == 0:
+            # no more changes - grid is stable.
+            # Find the number of unoccupied elements.
+            unoccupied = 0
+            for row in grid:
+                unoccupied += row.count('#')
+            
+            print(unoccupied)
+            break
+        print(len(changes))
+        for change in changes:
+            if grid[change[0]][change[1]] == 'L':
+                grid[change[0]][change[1]] = '#'
+            
+            else:
+                grid[change[0]][change[1]] = 'L'
+        
+        for line in grid:
+            print(''.join(line))
 
-    #if len(changes) == 0:
-    #    break    
-    #print(changes)
-    #apply_changes(changes,grid)
 
-def display(grid):
-    for i in range(0,len(grid)):
-        print(' {}'.format(grid[i]))
-
-def apply_changes(changes, grid):
-    for (row,col) in changes:
-        new_row = list(grid[row])
-        new_row[col] = 'L' if grid[row][col] == '#' else '#'
-        grid[row] = ''.join(new_row)
-
-def get_change(grid, row, col):
+# updated for problem 2
+def should_change(grid, row, col):
     if grid[row][col] == '.':
-        # Nothing to do
         return None
     
-    max_col = len(grid[row]) -1
-    max_row = len(grid) -1
+    if grid[row][col] == 'L' and get_line_of_sight(grid, row, col) == 0:
+        return (row,col)
+    
+    if grid[row][col] == '#' and get_line_of_sight(grid, row, col) >= 5:
+        return (row,col)
 
-    num_occupied = 0
-    # top left
-    if (row > 0 and col > 1 and grid[row-1][col-1] == '#'):
-        num_occupied += 1
-    # top
-    if (row > 0 and grid[row-1][col] == '#'):
-        num_occupied += 1
-    # top right
-    if (row > 0 and col < max_col and grid[row-1][col+1] == '#'):
-        num_occupied += 1
-
+def get_number_occupied(grid, row, col):
+    #print('{},{}'.format(row,col))
+    number_occupied = 0
+    # top row
+    if row > 0:
+        # top left
+        if col > 0 and grid[row-1][col-1] == '#':
+                number_occupied += 1
+        # above
+        if grid[row-1][col] == '#':
+            number_occupied  +=1
+        
+        # top right
+        if col < len(grid[row]) -1 and grid[row-1][col+1] == '#':
+            number_occupied +=1 
+    
     # left
-    if (col > 0 and grid[row][col-1] == '#'):
-        num_occupied += 1
+    if col > 0 and grid[row][col-1] == '#':
+        number_occupied += 1
+    
     # right
-    if (col < max_col and grid[row][col+1] == '#'):
-        num_occupied += 1
+    if col < len(grid[row]) - 1 and grid[row][col+1] == '#':
+        number_occupied += 1
     
     # bottom left
-    if (row < max_row and col > 1 and grid[row+1][col-1] == '#'):
-        num_occupied += 1
-    # bottom
-    if (row < max_row and grid[row+1][col] == '#'):
-        num_occupied += 1
-    # bottom right
-    if (row < max_row and col < max_col and grid[row+1][col+1] == '#'):
-        num_occupied += 1
-    
-    #if (row,col) == (1,1):
-    #    print('1,1 {} {}'.format(grid[row][col], num_occupied))
-    
-    if 'L' == grid[row][col] and num_occupied == 0:
-        return (row,col)
-        #new_row = list(grid[row])
-        #new_row[col] = '#'
-        #grid[row] = ''.join(new_row)
-        #list(grid[row])[col] = '#'
+    if row < len(grid) - 1:
+        # bottom right
+        if col > 0 and grid[row+1][col-1] == '#':
+            number_occupied += 1
+        
+        # below
+        if grid[row+1][col] == '#':
+            number_occupied += 1
+        
+        # bottom right
+        if col < len(grid[row]) - 1 and grid[row+1][col+1] == '#':
+            number_occupied += 1
 
-    if '#' == grid[row][col] and num_occupied >= 4:
-        #new_row = list(grid[row])
-        #new_row[col] = 'L'
-        #grid[row] = ''.join(new_row)
-        return (row,col)
+    return number_occupied
 
+
+def get_line_of_sight(grid, row, col):
+    number_occupied = 0
+    
+    for direction in [(-1,-1),(-1,0),(-1,1), (0,-1),(0,1), (1,-1),(1,0),(1,1)]:   
+        position = (row + direction[0], col + direction[1])
+        while(position[0] >= 0 and position[0] < len(grid)  and position[1] >= 0 and position[1] < len(grid[0])):
+            #print(position)
+            if '#' == grid[position[0]][position[1]]:
+                number_occupied += 1
+                break
+            if 'L' == grid[position[0]][position[1]]:
+                break
+            position = (position[0] + direction[0], position[1] + direction[1])    
+            
+
+    return number_occupied
+    
+
+
+
+with open('./problem11_input.txt') as f:
 #with open('./test_input.txt') as f:
-with open('./test1.txt') as f:
     grid = [l.strip() for l in f.readlines()]
     solve_problem(grid)
+    #get_line_of_sight(grid,2,2)
