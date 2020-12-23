@@ -41,6 +41,7 @@ def should_change(grid, row, col):
     if grid[row][col] == 'L' and get_line_of_sight(grid, row, col) == 0:
         return (row,col)
     
+    # 4 for problem 1
     if grid[row][col] == '#' and get_line_of_sight(grid, row, col) >= 5:
         return (row,col)
 
